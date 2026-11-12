@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8f4">
+  <meta name="description" content="讓每一筆收支都有去處。小日子是簡單、清楚的個人記帳與帳務查詢工具，陪你慢慢找到理想的生活節奏。">
+  <title>小日子｜把錢花在喜歡的生活上</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20342f;
+      --muted: #75827b;
+      --green: #34685a;
+      --green-dark: #285346;
+      --lime: #dce9bd;
+      --cream: #f7f8f4;
+      --white: #fff;
+      --line: #e8ebe4;
+      --coral: #e69879;
+      --shadow: 0 24px 70px rgb(34 57 45 / 10%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1120px, calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    .site-header { padding: 26px 0; }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
+      font-weight: 750;
+      letter-spacing: -.04em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--green);
+      color: white;
+    }
+
+    .brand-mark svg { width: 20px; height: 20px; }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green-dark);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .nav-link svg { width: 16px; height: 16px; }
+
+    .hero {
+      display: grid;
+      min-height: 570px;
+      grid-template-columns: 1.02fr .98fr;
+      align-items: center;
+      gap: 52px;
+      padding-block: 54px 84px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #88a776;
+    }
+
+    h1 {
+      max-width: 550px;
+      margin: 20px 0;
+      font-size: clamp(42px, 5.3vw, 66px);
+      font-weight: 750;
+      letter-spacing: -.065em;
+      line-height: 1.23;
+    }
+
+    h1 span {
+      position: relative;
+      z-index: 0;
+      white-space: nowrap;
+    }
+
+    h1 span::after {
+      position: absolute;
+      z-index: -1;
+      right: -3px;
+      bottom: 4px;
+      left: -3px;
+      height: 15px;
+      border-radius: 10px;
+      background: var(--lime);
+      content: "";
+    }
+
+    .hero-copy {
+      max-width: 430px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.95;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 50px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 22px;
+      border-radius: 9px;
+      background: var(--green);
+      color: white;
+      font-size: 14px;
+      font-weight: 650;
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    .button:hover { transform: translateY(-2px); background: var(--green-dark); }
+    .button svg { width: 17px; height: 17px; }
+
+    .quiet-link {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 550;
+    }
+
+    .quiet-link:hover { color: var(--green); }
+
+    .visual {
+      position: relative;
+      display: grid;
+      min-height: 430px;
+      place-items: center;
+    }
+
+    .visual-blob {
+      position: absolute;
+      width: min(440px, 100%);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #eaf0df;
+    }
+
+    .dashboard {
+      position: relative;
+      width: min(380px, 90%);
+      overflow: hidden;
+      padding: 26px;
+      border: 1px solid rgb(255 255 255 / 90%);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+      transform: rotate(-2deg);
+    }
+
+    .dashboard-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .month-pill {
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: #f4f6f1;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .balance-label {
+      margin: 28px 0 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .balance {
+      margin: 0;
+      font-size: 36px;
+      font-weight: 720;
+      letter-spacing: -.055em;
+    }
+
+    .balance small {
+      margin-left: 5px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .chart {
+      display: flex;
+      height: 122px;
+      align-items: end;
+      justify-content: space-between;
+      gap: 11px;
+      padding: 19px 4px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .bar {
+      width: 12%;
+      min-height: 12px;
+      border-radius: 5px 5px 2px 2px;
+      background: #dce8d3;
+    }
+
+    .bar:nth-child(2), .bar:nth-child(5) { background: #afc8a4; }
+    .bar:nth-child(4) { background: #779b7d; }
+    .bar:nth-child(6) { background: var(--green); }
+    .bar:nth-child(7) { background: #dfe6d9; }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 3px 0;
+      color: #a0aaa2;
+      font-size: 10px;
+    }
+
+    .transactions { margin-top: 21px; }
+
+    .transactions-heading {
+      margin: 0 0 14px;
+      font-size: 13px;
+      font-weight: 680;
+    }
+
+    .transaction {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-top: 12px;
+    }
+
+    .transaction-icon {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 10px;
+      background: #f1f5ea;
+      font-size: 15px;
+    }
+
+    .transaction-name {
+      flex: 1;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .transaction-name small {
+      display: block;
+      margin-top: 4px;
+      color: #9aa49c;
+      font-size: 10px;
+      font-weight: 450;
+    }
+
+    .transaction-amount { font-size: 12px; font-weight: 650; }
+
+    .floating-note {
+      position: absolute;
+      right: -4px;
+      bottom: 53px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 13px 17px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 12px 32px rgb(34 57 45 / 8%);
+      transform: rotate(3deg);
+    }
+
+    .note-icon {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border-radius: 10px;
+      background: #fbefe8;
+      color: #ce805e;
+      font-weight: 700;
+    }
+
+    .floating-note p { margin: 0; font-size: 11px; line-height: 1.5; }
+    .floating-note strong { font-size: 12px; }
+
+    .benefits {
+      padding: 78px 0 86px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .section-heading { max-width: 560px; margin: 0 auto 42px; text-align: center; }
+
+    .section-heading .eyebrow { justify-content: center; }
+
+    h2 {
+      margin: 14px 0 10px;
+      font-size: clamp(28px, 3.5vw, 38px);
+      font-weight: 730;
+      letter-spacing: -.055em;
+      line-height: 1.35;
+    }
+
+    .section-heading > p:last-child {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .benefit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .benefit-card {
+      padding: 27px 25px 29px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #fff;
+    }
+
+    .benefit-icon {
+      display: grid;
+      width: 43px;
+      height: 43px;
+      place-items: center;
+      border-radius: 13px;
+      background: #edf2e8;
+      color: var(--green);
+    }
+
+    .benefit-icon svg { width: 21px; height: 21px; }
+    .benefit-card:nth-child(2) .benefit-icon { background: #f9eee8; color: #bb7556; }
+    .benefit-card:nth-child(3) .benefit-icon { background: #edf0f7; color: #6a7ca2; }
+
+    .benefit-card h3 { margin: 20px 0 8px; font-size: 16px; font-weight: 700; }
+
+    .benefit-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.85;
+    }
+
+    .closing {
+      padding: 63px 24px 66px;
+      background: #edf1e8;
+      text-align: center;
+    }
+
+    .closing h2 { margin-top: 0; }
+    .closing p { margin: 0 0 24px; color: var(--muted); font-size: 14px; }
+
+    footer { padding: 23px 0; }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer-brand { color: var(--ink); font-size: 14px; }
+
+    :focus-visible { outline: 3px solid #9aaf72; outline-offset: 4px; }
+
+    @media (max-width: 760px) {
+      .hero {
+        min-height: unset;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding-block: 47px 66px;
+      }
+
+      .hero-text { max-width: 550px; margin-inline: auto; }
+      .visual { min-height: 395px; }
+      .visual-blob { width: min(390px, 92%); }
+      .dashboard { width: min(360px, 86%); }
+      .floating-note { right: 2%; bottom: 37px; }
+      .benefit-grid { grid-template-columns: 1fr; gap: 12px; }
+      .benefit-card { display: grid; grid-template-columns: 43px 1fr; column-gap: 15px; padding: 19px; }
+      .benefit-card h3 { align-self: end; margin: 0 0 4px; }
+      .benefit-card p { grid-column: 2; }
+      .benefit-icon { grid-row: span 2; }
+      .benefits { padding: 64px 0; }
+    }
+
+    @media (max-width: 420px) {
+      .container { width: min(100% - 36px, 1120px); }
+      .site-header { padding: 19px 0; }
+      .nav-link { font-size: 13px; }
+      h1 { font-size: 43px; }
+      .hero-copy { font-size: 14px; }
+      .visual { min-height: 360px; }
+      .dashboard { padding: 21px; }
+      .floating-note { bottom: 24px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<script>
+ window.difyChatbotConfig = {
+  token: 'eFXtDYQO23FxVD2c',
+  baseUrl: 'https://udify.app',
+  inputs: {
+    // You can define the inputs from the Start node here
+    // key is the variable name
+    // e.g.
+    // name: "NAME"
+  },
+  systemVariables: {
+    // user_id: 'YOU CAN DEFINE USER ID HERE',
+    // conversation_id: 'YOU CAN DEFINE CONVERSATION ID HERE, IT MUST BE A VALID UUID',
+  },
+  userVariables: {
+    // avatar_url: 'YOU CAN DEFINE USER AVATAR URL HERE',
+    // name: 'YOU CAN DEFINE USER NAME HERE',
+  },
+ }
+</script>
+<script
+ src="https://udify.app/embed.min.js"
+ id="eFXtDYQO23FxVD2c"
+ defer>
+</script>
+<style>
+  #dify-chatbot-bubble-button {
+    background-color: #1C64F2 !important;
+  }
+  #dify-chatbot-bubble-window {
+    width: 24rem !important;
+    height: 40rem !important;
+  }
+</style>
+<body>
+  <header class="site-header">
+    <nav class="nav container" aria-label="主要導覽">
+      <a class="brand" href="#" aria-label="小日子首頁">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>
+            <path d="M9 12h6M12 9v6"/>
+          </svg>
+        </span>
+        小日子
+      </a>
+      <a class="nav-link" href="#benefits">
+        為什麼記帳
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6"/>
+        </svg>
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container" aria-labelledby="hero-title">
+      <div class="hero-text">
+        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>給生活多一點從容</p>
+        <h1 id="hero-title">每一筆花費，<br>都更<span>心裡有數。</span></h1>
+        <p class="hero-copy">記帳不用很複雜。輕鬆記下每一筆收支，隨時回頭看看錢去了哪裡，讓每個選擇都更靠近你喜歡的生活。</p>
+        <div class="hero-actions">
+          <a class="button" href="#benefits">
+            開始認識記帳
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14m-6-6 6 6-6 6"/>
+            </svg>
+          </a>
+          <a class="quiet-link" href="#overview">看看記帳長什麼樣</a>
+        </div>
+      </div>
+
+      <div class="visual" id="overview" aria-label="記帳帳務查詢介面示意">
+        <div class="visual-blob" aria-hidden="true"></div>
+        <div class="dashboard">
+          <div class="dashboard-top">
+            <span>收支總覽</span>
+            <span class="month-pill">本月⌄</span>
+          </div>
+          <p class="balance-label">本月結餘</p>
+          <p class="balance">$18,420<small>NTD</small></p>
+          <div class="chart" role="img" aria-label="本月每日收支趨勢圖">
+            <span class="bar" style="height:34%"></span>
+            <span class="bar" style="height:52%"></span>
+            <span class="bar" style="height:42%"></span>
+            <span class="bar" style="height:71%"></span>
+            <span class="bar" style="height:54%"></span>
+            <span class="bar" style="height:88%"></span>
+            <span class="bar" style="height:65%"></span>
+          </div>
+          <div class="chart-labels" aria-hidden="true">
+            <span>週一</span><span>週二</span><span>週三</span><span>週四</span><span>週五</span><span>週六</span><span>週日</span>
+          </div>
+          <div class="transactions">
+            <p class="transactions-heading">最近紀錄</p>
+            <div class="transaction">
+              <span class="transaction-icon" aria-hidden="true">☕</span>
+              <span class="transaction-name">咖啡時光<small>飲食・今天 10:24</small></span>
+              <span class="transaction-amount">−$135</span>
+            </div>
+            <div class="transaction">
+              <span class="transaction-icon" aria-hidden="true">↗</span>
+              <span class="transaction-name">每月薪資<small>收入・今天 09:00</small></span>
+              <span class="transaction-amount">+$42,000</span>
+            </div>
+          </div>
+        </div>
+        <div class="floating-note">
+          <span class="note-icon" aria-hidden="true">↗</span>
+          <p><strong>慢慢累積，好習慣</strong><br>看見每一點進步</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits" id="benefits" aria-labelledby="benefits-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>記帳，讓日子更有方向</p>
+          <h2 id="benefits-title">了解金錢，就是更了解自己</h2>
+          <p>不為了省下每一分，而是把錢留給真正重要的事。</p>
+        </div>
+        <div class="benefit-grid">
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19V5m0 14h17"/><path d="m7 15 4-4 3 2 6-7"/>
+              </svg>
+            </span>
+            <h3>看見消費習慣</h3>
+            <p>清楚掌握收支流向，發現平常沒注意到的小花費，消費選擇更踏實。</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M8 3.8 6.5 2.5m9.5 1.3 1.5-1.3"/>
+              </svg>
+            </span>
+            <h3>替未來做好準備</h3>
+            <p>了解每月收支，就能從容安排目標、預算與儲蓄，一步步靠近想要的未來。</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v18m6-14.5c-1-2-8-3-10 0s1 4 4 5 7 2 5 5-9 3-11 0"/>
+              </svg>
+            </span>
+            <h3>減少不必要的焦慮</h3>
+            <p>帳務一目了然，遇到生活變化時更有餘裕，也更安心地享受當下。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <h2 id="closing-title">從今天開始，記下你的每一天。</h2>
+      <p>一筆一筆，慢慢整理出喜歡的生活節奏。</p>
+      <a class="button" href="#overview">從一筆開始</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner container">
+      <a class="brand footer-brand" href="#" aria-label="小日子首頁">小日子</a>
+      <span>記下日常，安心生活。</span>
+      <span>© 2026 小日子</span>
+    </div>
+  </footer>
+</body>
+</html>
